@@ -1,6 +1,8 @@
 package ca.mineself;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -31,6 +33,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import ca.mineself.fragment.MetricFragment;
+import ca.mineself.model.Metric;
 import ca.mineself.model.MetricEntry;
 
 import static ca.mineself.AlarmReceiver.CHANNEL_ID;
@@ -57,14 +61,6 @@ public class MiningActivity extends AppCompatActivity {
     private ActionEntriesAdapter actionEntriesAdapter;
     private RecyclerView.LayoutManager actionEntriesLayoutManager;
 
-    //Save timeout
-    TimerTask metricSaveTimeout = null;
-
-    //Constants
-    final Long METRIC_SAVE_TIMEOUT = 5000L;
-    final String METRIC_NAME = "Mood";
-
-    final long REMINDER_INTERVAL = 10000; //Every half hour
 
     //Persistence
     public LocalDatabase localDb;
@@ -76,6 +72,10 @@ public class MiningActivity extends AppCompatActivity {
     AlarmManager alarmManager;
     NotificationManager notificationManager;
 
+    public FragmentManager fragmentManager;
+
+    private MetricFragment metricFragment;
+
     public static MiningActivity instance;
 
     public static MiningActivity getInstance(){
@@ -85,9 +85,33 @@ public class MiningActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
 
         /**
+         * LOCAL DATABASE SETUP
+         */
+        localDb = Room.databaseBuilder(getApplicationContext(),
+                LocalDatabase.class, "local-storage")
+                .allowMainThreadQueries()
+                .build();
+
+        instance = this;
+        Log.d("MiningActivity", "local database setup!");
+
+        setContentView(R.layout.activity_main);
+
+        /*
+         * SETUP FRAGMENTS
+         */
+        fragmentManager = getSupportFragmentManager();
+
+        Metric metric = new Metric();
+        metric.setName("Mood");
+        metricFragment = MetricFragment.addMetricFragment(fragmentManager,metric);
+
+
+
+        /*
          * SETUP NOTIFICATIONS
          */
 
@@ -112,19 +136,11 @@ public class MiningActivity extends AppCompatActivity {
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(getApplicationContext(), 1,i,0);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000*60*30, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_HALF_HOUR, pendingIntent);
 
 
 
-        /**
-         * LOCAL DATABASE SETUP
-         */
-        localDb = Room.databaseBuilder(getApplicationContext(),
-                LocalDatabase.class, "local-storage")
-                .allowMainThreadQueries()
-                .build();
 
-        instance = this;
 
         lastMetricEntry = localDb.metricEntryDAO().getLast();
 
@@ -136,86 +152,6 @@ public class MiningActivity extends AppCompatActivity {
                 }
         );
 
-
-        /**
-         * METRIC NAME LABEL SETUP
-         */
-        metricNameLabel = (TextView) findViewById(R.id.metricNameLabel);
-
-
-        /**
-         * METRIC VALUE LABEL SETUP
-         */
-        metricValueLabel = (TextView) findViewById(R.id.metricValueLabel);
-        metricValueLabel.setText(
-                lastMetricEntry != null?Integer.toString(lastMetricEntry.getValue()):"0");
-
-        /**
-         * METRIC VALUE INPUT SETUP
-         */
-        metricValueInput = (SeekBar) findViewById(R.id.metricValueInput);
-        metricValueInput.setProgress(
-                lastMetricEntry!=null?lastMetricEntry.getValue():0);
-        metricValueInput.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-
-                findViewById(R.id.savedLabel).setVisibility(View.INVISIBLE);
-
-                Log.d("metric value", Integer.toString(value));
-                metricValueLabel.setText(Integer.toString(value));
-                Log.d("timer task", "creating task");
-
-                //Clear any past save timeout
-                if(metricSaveTimeout != null){
-                    metricSaveTimeout.cancel();
-                }
-
-                metricSaveTimeout = new TimerTask(){
-
-                    @Override
-                    public void run() {
-
-                        //Get the time that will be the start of the new metric value as well as the end of the old one
-                        Date time = Date.from(Instant.ofEpochMilli(Date.from(Instant.now()).getTime() - METRIC_SAVE_TIMEOUT));
-
-                        if(lastMetricEntry != null){
-                            Log.d("MetricEntry", "Updating last metric entry");
-                            lastMetricEntry.setEndTime(time);
-                            localDb.metricEntryDAO().updateEntries(lastMetricEntry);
-                        }
-
-                        Log.d("MetricEntry", "Creating new metric entry");
-                        MetricEntry entry = new MetricEntry();
-                        //Set the entry start time, accounting for the save delay
-                        entry.setStartTime(time);
-                        entry.setValue(value);
-                        entry.setName(METRIC_NAME);
-
-                        localDb.metricEntryDAO().insertAll(entry);
-                        lastMetricEntry = entry;
-                        Log.d("MetricEntry","saved");
-                        findViewById(R.id.savedLabel).post(()->{
-                            findViewById(R.id.savedLabel).setVisibility(View.VISIBLE);
-                        });
-
-                    }
-                };
-
-
-                new Timer().schedule(metricSaveTimeout, METRIC_SAVE_TIMEOUT);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
         /**
          * ADD ACTION ENTRY BUTTON SETUP
@@ -248,4 +184,5 @@ public class MiningActivity extends AppCompatActivity {
         actionEntriesAdapter = new ActionEntriesAdapter();
         actionEntriesRecycler.setAdapter(actionEntriesAdapter);
     }
+
 }

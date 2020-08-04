@@ -2,4 +2,5 @@
     <string name="app_name">MineSelf</string>
     <string name="channel_name">Mine Self</string>
     <string name="channel_description">Mine Self Reminders</string>
+    <string name="saved_text">Saved</string>
 </resources>
