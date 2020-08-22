@@ -14,7 +14,7 @@ import ca.mineself.model.ActionEntry;
 @Dao
 public interface ActionEntryDAO {
 
-    @Query("SELECT * FROM actionentry")
+    @Query("SELECT * FROM actionentry ORDER BY start_time DESC")
     List<ActionEntry> getAll();
 
     @Query("SELECT * FROM actionentry WHERE id IN (:actionEntryIds)")

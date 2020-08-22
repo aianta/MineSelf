@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -62,9 +63,11 @@ public class MiningActivity extends AppCompatActivity {
          * LOCAL DATABASE SETUP
          */
         localDb = Room.databaseBuilder(getApplicationContext(),
-                LocalDatabase.class, "local-storage")
+                LocalDatabase.class, "local-storage.db")
                 .allowMainThreadQueries()
+                .setJournalMode(RoomDatabase.JournalMode.AUTOMATIC)
                 .build();
+
 
         instance = this;
         Log.d("MiningActivity", "local database setup!");

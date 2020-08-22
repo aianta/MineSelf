@@ -34,6 +34,10 @@ public class MetricSeekBarListener implements SeekBar.OnSeekBarChangeListener {
         Log.d("MetricValue", Integer.toString(value));
         fragment.getValueLabel().setText(Integer.toString(value));
 
+        if(saveTimeout != null){
+            saveTimeout.cancel();
+        }
+
         saveTimeout = new TimerTask(){
 
             @Override

@@ -2,6 +2,7 @@ package ca.mineself.ui;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -11,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import ca.mineself.MiningActivity;
 import ca.mineself.R;
 import ca.mineself.model.ActionEntry;
+import ca.mineself.model.MetricEntry;
 
 public class ActionEntriesAdapter extends RecyclerView.Adapter<ActionEntryHolder> {
 
@@ -29,16 +32,16 @@ public class ActionEntriesAdapter extends RecyclerView.Adapter<ActionEntryHolder
         /** If we have previous entries set the end timestamp to the start timestamp of this entry.
          */
         if(entries.size() > 0){
-            ActionEntry previousEntry = entries.get(entries.size()-1);
+            ActionEntry previousEntry = entries.get(0);
             previousEntry.setEndTime(entry.getStartTime());
             MiningActivity.getInstance().localDb.actionEntryDAO().updateEntries(previousEntry);
             Log.d("Persistence","Updated previous action entry end timestamp");
         }
 
         //Add the new entry to the list of entries
-        entries.add(entry);
+        entries.add(0,entry);
 
-        notifyItemInserted(entries.size()-1);
+        notifyItemInserted(0);
         notifyDataSetChanged();
         Log.d("Add Entry", "allegedly inserted item and notified view..." + entries.size());
 
@@ -56,9 +59,10 @@ public class ActionEntriesAdapter extends RecyclerView.Adapter<ActionEntryHolder
     public ActionEntryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //Create a new text view for the holder
-        TextView textView = (TextView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.action_entry_item, parent, false);
-        ActionEntryHolder holder = new ActionEntryHolder(textView);
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.timeline_entry, parent, false);
+
+        ActionEntryHolder holder = new ActionEntryHolder(view);
 
         return holder;
     }
@@ -66,10 +70,23 @@ public class ActionEntriesAdapter extends RecyclerView.Adapter<ActionEntryHolder
     @Override
     public void onBindViewHolder(@NonNull ActionEntryHolder holder, int position) {
 
-        holder.textView.setText(entries.get(position).getName());
+        ActionEntry entry = entries.get(position);
+        holder.value.setText(entry.getName());
+        holder.setStart(entry.getStartTime());
+        holder.setEnd(entry.getEndTime());
+
+        MetricEntry metric = MiningActivity.getInstance().localDb.metricEntryDAO().selectAt(entry.getStartTime());
+
+        if(metric != null){
+            Log.d("ActionEntriesAdapter", "name: "+metric.getName() + " value: " + metric.getValue());
+            holder.defaultMetricValue.setText(""+metric.getValue());
+        }
+
+
         Log.d("onBindViewHolder", "entry text @ "+position+" should be " + entries.get(position).getName());
         Log.d("entries size", Integer.toString(entries.size()));
-        Log.d("textView value", holder.textView.getText().toString());
+        Log.d("textView value", holder.value.getText().toString());
+
 
     }
 

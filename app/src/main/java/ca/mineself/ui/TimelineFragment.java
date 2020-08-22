@@ -1,5 +1,7 @@
 package ca.mineself.ui;
 
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,8 @@ import ca.mineself.R;
  */
 public class TimelineFragment extends Fragment {
 
+    private final String LOG_TAG = "[Timeline Fragment]";
+
     // UI Elements
     private FloatingActionButton addActionEntryButton;
     private EditText actionEntryInput;
@@ -36,30 +40,50 @@ public class TimelineFragment extends Fragment {
 
     }
 
+    private void clearEntryInput(View v){
+        actionEntryInput.setText("");
+    }
+
+    private void handleAddEntryClick(View v){
+        Log.d(LOG_TAG, "floating action button click listener hit!");
+
+        String entryValue = actionEntryInput.getText().toString();
+
+        Log.d(LOG_TAG, "placeholder: " + getResources().getString(R.string.add_entry_input_placeholder));
+        // Don't add empty action entries
+        if(entryValue.isEmpty() || entryValue.equals(getResources().getString(R.string.add_entry_input_placeholder))){
+
+            actionEntryInput.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.inputError,getActivity().getTheme())));
+            Log.d("[TimelineFragment]", "Background tint mode "  + actionEntryInput.getBackgroundTintList().toString());
+            return;
+        }
+
+        //Reset any input value highlighting
+        actionEntryInput.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent, getActivity().getTheme())));
+
+        //Add the new entry
+        actionEntriesAdapter.addEntry(actionEntryInput.getText().toString());
+        actionEntryInput.setText("");
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
         View view = inflater.inflate(R.layout.timeline_component, container, true);
 
-        view.setOnClickListener(event->{
-            Log.d("[TimelineFragment]", "why am I a cunt?");
-        });
         /**
          * ADD ACTION ENTRY BUTTON SETUP
          */
         addActionEntryButton = (FloatingActionButton) view.findViewById(R.id.addActionEntryButton);
-        addActionEntryButton.setOnClickListener(event->{
-            Log.d("[TimelineFragment]", "floating action button click listener hit!");
-            actionEntriesAdapter.addEntry(actionEntryInput.getText().toString());
-            actionEntryInput.setText("");
-
-        });
+        addActionEntryButton.setOnClickListener(this::handleAddEntryClick);
 
         /**
          * ACTION ENTRY INPUT SETUP
          */
         actionEntryInput = (EditText) view.findViewById(R.id.entryInput);
+        actionEntryInput.setOnClickListener(this::clearEntryInput);
+        actionEntryInput.setOnFocusChangeListener((view1, b) -> clearEntryInput(view1));
 
         /**
          * ACTION ENTRIES RECYCLER SETUP
