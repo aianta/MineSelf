@@ -37,6 +37,12 @@ public class MetricFragment extends Fragment {
 
     private MetricEntry last;
 
+    /** Adds a metric fragment to the UI with the provided metric model
+     *
+     * @param fragmentManager
+     * @param metric
+     * @return
+     */
     public static MetricFragment addMetricFragment(FragmentManager fragmentManager, Metric metric){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         MetricFragment metricFragment = new MetricFragment();

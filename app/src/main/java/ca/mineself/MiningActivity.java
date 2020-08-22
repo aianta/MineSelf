@@ -2,7 +2,6 @@ package ca.mineself;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -14,52 +13,23 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.time.Instant;
-import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
-
 import ca.mineself.fragment.MetricFragment;
 import ca.mineself.model.Metric;
 import ca.mineself.model.MetricEntry;
+import ca.mineself.ui.ActionEntriesAdapter;
+import ca.mineself.ui.TimelineFragment;
 
 import static ca.mineself.AlarmReceiver.CHANNEL_ID;
 
 public class MiningActivity extends AppCompatActivity {
-
-    //Metric Value Input
-    private SeekBar metricValueInput;
-
-    //Metric Name Label
-    private TextView metricNameLabel;
-
-    //Metric Value Label
-    private TextView metricValueLabel;
-
-    //Add Action Entry Button
-    private FloatingActionButton addActionEntryButton;
-
-    //Action Entry Text Input
-    private EditText actionEntryInput;
-
-    //Action entries
-    private RecyclerView actionEntriesRecycler;
-    private ActionEntriesAdapter actionEntriesAdapter;
-    private RecyclerView.LayoutManager actionEntriesLayoutManager;
 
 
     //Persistence
@@ -75,6 +45,7 @@ public class MiningActivity extends AppCompatActivity {
     public FragmentManager fragmentManager;
 
     private MetricFragment metricFragment;
+    private TimelineFragment timelineFragment;
 
     public static MiningActivity instance;
 
@@ -127,7 +98,7 @@ public class MiningActivity extends AppCompatActivity {
         notificationManager.createNotificationChannel(channel);
 
 
-        registerReceiver(new AlarmReceiver(), new IntentFilter("ca.mineself.START_ALARM"));
+        //registerReceiver(new AlarmReceiver(), new IntentFilter("ca.mineself.START_ALARM"));
 
         alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Log.d("AlarmManager", alarmManager.toString());
@@ -153,36 +124,10 @@ public class MiningActivity extends AppCompatActivity {
         );
 
 
-        /**
-         * ADD ACTION ENTRY BUTTON SETUP
-         */
-        addActionEntryButton = (FloatingActionButton) findViewById(R.id.addActionEntryButton);
-        addActionEntryButton.setOnClickListener(event->{
-            Log.d("mining activity", "floating action button click listener hit!");
-            actionEntriesAdapter.addEntry(actionEntryInput.getText().toString());
-            actionEntryInput.setText("");
 
-        });
 
-        /**
-         * ACTION ENTRY INPUT SETUP
-         */
-        actionEntryInput = (EditText) findViewById(R.id.actionEntryInput);
 
-        /**
-         * ACTION ENTRIES RECYCLER SETUP
-         */
 
-        //Get the action entries recycler
-        actionEntriesRecycler = (RecyclerView)findViewById(R.id.actionEntires);
-
-        //Use a linear layout manager
-        actionEntriesLayoutManager = new LinearLayoutManager(this);
-        actionEntriesRecycler.setLayoutManager(actionEntriesLayoutManager);
-
-        //Bind action entries adapter
-        actionEntriesAdapter = new ActionEntriesAdapter();
-        actionEntriesRecycler.setAdapter(actionEntriesAdapter);
     }
 
 }

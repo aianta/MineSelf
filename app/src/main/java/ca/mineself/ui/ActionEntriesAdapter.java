@@ -1,4 +1,4 @@
-package ca.mineself;
+package ca.mineself.ui;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,11 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
+import ca.mineself.MiningActivity;
+import ca.mineself.R;
 import ca.mineself.model.ActionEntry;
 
 public class ActionEntriesAdapter extends RecyclerView.Adapter<ActionEntryHolder> {

@@ -2,67 +2,34 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:contextClickable="true"
+    android:longClickable="true"
     tools:context=".MiningActivity">
+
+    <fragment
+        android:id="@+id/TimelineFragment"
+        android:name="ca.mineself.ui.TimelineFragment"
+        android:layout_width="414dp"
+        android:layout_height="500dp"
+        android:clickable="true"
+        android:contextClickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/timeline_component" />
 
     <LinearLayout
         android:id="@+id/miningLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/actionEntryInput"
-                android:layout_width="342dp"
-                android:layout_height="41dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Enter Activity..." />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/addActionEntryButton"
-                android:layout_width="56dp"
-                android:layout_height="41dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:clickable="true"
-                app:backgroundTint="#BAE7F3"
-                app:srcCompat="@android:drawable/ic_input_add" />
-        </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/actionEntires"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp">
-
-                </androidx.recyclerview.widget.RecyclerView>
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/TimelineFragment"></LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
