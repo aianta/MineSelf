@@ -9,19 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MiningActivity">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="ca.mineself.AlarmReceiver" android:enabled="true">
-            <intent-filter>
-                <action android:name="ca.mineself.START_ALARM" >
-                </action>
-            </intent-filter>
-        </receiver>
+        <activity android:name=".ProfileCreateActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity android:name=".AspectsActivity"
+            android:label="@string/app_name">
+        </activity>
+
     </application>
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 </manifest>

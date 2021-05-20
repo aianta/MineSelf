@@ -2,34 +2,29 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activityLayout"
+    tools:context=".SplashActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true"
-    android:contextClickable="true"
-    android:longClickable="true"
-    tools:context=".MiningActivity">
+    android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/TimelineFragment"
-        android:name="ca.mineself.ui.TimelineFragment"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/profileList"
         android:layout_width="414dp"
-        android:layout_height="500dp"
-        android:clickable="true"
-        android:contextClickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/timeline_component" />
+        android:layout_height="254dp"
 
-    <LinearLayout
-        android:id="@+id/miningLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TimelineFragment"></LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
+    <Button
+        android:id="@+id/createProfileBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Profile"
+        android:onClick="createProfile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileList" />
 </androidx.constraintlayout.widget.ConstraintLayout>

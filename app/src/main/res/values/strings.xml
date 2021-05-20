@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">MineSelf</string>
-    <string name="channel_name">Mine Self</string>
-    <string name="channel_description">Mine Self Reminders</string>
-    <string name="saved_text">Saved</string>
-    <string name="add_entry_input_placeholder">Enter Activity...</string>
+    <string name="add_button_text">+</string>
+    <string name="profile_create_name_placeholder">Enter a profile name...</string>
+    <string name="profile_create_db_settings_header">InfluxDB Settings</string>
+    <string name="profile_create_host_label">Host</string>
+    <string name="profile_create_token_label">Token</string>
+    <string name="profile_create_host_placeholder">localhost:8086</string>
+    <string name="profile_create_token_placeholder">token</string>
+    <string name="profile_create_btn_text">Create</string>
+    <string name="aspects_header">My Aspects</string>
+    <string name="aspects_to_splash_btn">Profiles</string>
 </resources>
