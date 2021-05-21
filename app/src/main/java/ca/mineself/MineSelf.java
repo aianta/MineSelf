@@ -1,8 +1,20 @@
 package ca.mineself;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.InfluxDBClientFactory;
+import com.influxdb.client.domain.Organization;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
+import ca.mineself.adapters.AspectListAdapter;
 import ca.mineself.adapters.ProfileListAdapter;
 import ca.mineself.model.Profile;
 
@@ -12,6 +24,9 @@ import ca.mineself.model.Profile;
 public class MineSelf {
 
     private static MineSelf instance;
+
+    //Influx Client
+    private InfluxDBClient client;
 
     //Application Adapters
     private ProfileListAdapter profileList = new ProfileListAdapter();
@@ -40,6 +55,36 @@ public class MineSelf {
             }
         }
     }
+
+    private MineSelf(){
+
+    }
+
+    /**
+     * Opens a client for a given profile. Creates org and bucket if they don't exist.
+     * @param profile
+     * @return
+     */
+    public InfluxDBClient openInfluxClient(Profile profile){
+
+
+        client = InfluxDBClientFactory.create(profile.host, profile.token.toCharArray());
+
+        CompletableFuture.supplyAsync(()->Influx.findOrCreateOrg(client, profile.name))
+                .thenApply(organization -> {
+                    profile.orgId = organization.getId();
+                    return profile;
+                })
+                .thenApplyAsync(p->Influx.findOrCreateBucket(client,p.name, p.orgId))
+                .thenApply(bucket -> {
+                    profile.bucketId = bucket.getId();
+                    return profile;
+                }).handle((unused, throwable) -> Log.d("Influx", "Done!")
+        );
+
+        return client;
+    }
+
 
     public static MineSelf getInstance(){
         if (instance == null){

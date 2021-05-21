@@ -4,11 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingTop="15dp"
+    android:paddingRight="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
@@ -31,12 +34,52 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="108dp"
             android:layout_marginBottom="8dp"
+            android:onClick="showNewAspectUI"
             android:text="@string/add_button_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/newAspectLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/editNewAspectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/aspects_new_aspect_name_placeholder" />
+
+        <EditText
+            android:id="@+id/editNewAspectValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:ems="10"
+            android:inputType="numberSigned"
+            android:text="@string/aspects_new_aspect_value_placeholder" />
+
+        <Button
+            android:id="@+id/confirmNewAspectBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="createAspect"
+            android:text="@string/confirm_button_text" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/aspectList"
-        android:layout_width="411dp"
-        android:layout_height="578dp"
-        android:layout_marginTop="24dp" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </LinearLayout>
