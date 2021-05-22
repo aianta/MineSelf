@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import ca.mineself.model.Aspect;
 import ca.mineself.model.Profile;
@@ -67,13 +68,45 @@ public class Influx {
                 "schema.measurements(bucket:\""+ bucketName +"\")";
 
         List<FluxTable> tables = client.getQueryApi().query(query, orgName);
-        for(FluxTable fluxTable: tables){
-            Log.d("FluxTable" ,"[_value]");
-            fluxTable.getRecords().stream()
-                    .forEach(record->Log.d("FluxRecord", record.getValueByKey("_value").toString()));
+        FluxTable fluxTable = tables.get(0);
+        return fluxTable.getRecords().stream()
+                .map(record->record.getValueByKey("_value").toString())
+                .peek(aspectName->Log.d("Influx", "aspect: " + aspectName))
+                .map(aspectName->Influx.getAspectWithName(client,aspectName,bucketName,orgName))
+                .collect(Collectors.toList());
+
+    }
+
+    private static Aspect getAspectWithName(InfluxDBClient client, String aspectName, String bucketName, String orgName){
+        Aspect result = new Aspect();
+        result.name = aspectName;
+
+        String query = "from(bucket:\""+bucketName + "\")" +
+                "|> range(start:1609518184, stop:now())" + //Start Fri Jan 01 2021 16:23:04 GMT+0000
+                "|> filter(fn: (r)=> r._measurement == \""+aspectName+"\" and (r._field ==\"value\" or r._field == \"delta\")) " +
+                "|> last()";
+
+        try{
+            List<FluxTable> tables = client.getQueryApi().query(query, orgName);
+            for(FluxTable fluxTable: tables){
+                switch (fluxTable.getRecords().get(0).getField()){
+                    case "value":
+                        result.value = (long)fluxTable.getRecords().get(0).getValue();
+                        break;
+                    case "delta":
+                        result.delta = (long)fluxTable.getRecords().get(0).getValue();
+                        break;
+                    default:
+                        Log.d("Influx", "Unrecognized aspect field "+fluxTable.getRecords().get(0).getField()+" while attempting to load "+ aspectName + " aspect");
+                }
+            }
+        }catch (Exception e){
+            Log.e("Influx", "Error getting aspect with name!");
+            Log.e("Influx", e.getMessage(), e);
         }
 
-        return null;
+
+        return result;
     }
 
     public static void insertPoint(InfluxDBClient client, String bucket, String org, Point point){

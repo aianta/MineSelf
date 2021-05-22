@@ -60,7 +60,7 @@ public class AspectsActivity extends AppCompatActivity {
         newAspectValue.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(newAspectValue)::onFocusChange);
 
         //Set up aspects recycler
-        aspectListAdapter = aspectListAdapter!=null?aspectListAdapter:new AspectListAdapter();
+        aspectListAdapter = aspectListAdapter!=null?aspectListAdapter:new AspectListAdapter(profile);
         aspects = (RecyclerView)view.findViewById(R.id.aspectList);
         aspects.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         aspects.setAdapter(aspectListAdapter);
@@ -69,7 +69,10 @@ public class AspectsActivity extends AppCompatActivity {
 
         //Get Aspects
         CompletableFuture.supplyAsync(()->Influx.getAspects(client, profile.name, profile.name))
-                .handle((results, throwable) -> Log.d(getClass().getSimpleName(), "Done get aspects"));
+                .whenComplete((results, throwable) -> {
+                    aspectListAdapter.setAspects(results);
+                    Log.d(getClass().getSimpleName(),"Loaded Aspects from InfluxDB");
+                });
     }
 
     public void toSplash(View view){

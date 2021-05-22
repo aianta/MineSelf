@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/editDelta"
@@ -11,44 +12,77 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="numberSigned"
-        app:layout_constraintBottom_toTopOf="@+id/updatedValueLabel"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="24dp" />
+        android:text="@string/aspect_update_delta_placeholder" />
 
-    <TextView
-        android:id="@+id/updatedValueLabel"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editValue"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
-        android:text="new value"
-        android:textSize="60sp"
-        app:layout_constraintBottom_toTopOf="@+id/editNote"
-        tools:layout_editor_absoluteX="72dp" />
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:text="@string/aspect_update_value_placeholder" />
 
     <EditText
         android:id="@+id/editNote"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Write a note..."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="215dp" />
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:text="@string/aspect_update_note_placeholder" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tagsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/aspect_update_tags_label" />
+
+        <Button
+            android:id="@+id/addTagBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_button_text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/createTagLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/editNewTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/aspect_update_new_tag_placeholder" />
+
+        <Button
+            android:id="@+id/createNewTagBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/confirm_button_text" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="403dp"
-        android:layout_height="377dp"
-        android:layout_marginTop="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/updateBtn"
-        app:layout_constraintTop_toBottomOf="@+id/editNote"
-        tools:layout_editor_absoluteX="1dp" />
+        android:id="@+id/tagsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/updateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update"
-        tools:layout_editor_absoluteX="161dp"
-        tools:layout_editor_absoluteY="667dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:text="Update" />
+</LinearLayout>

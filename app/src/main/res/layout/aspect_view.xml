@@ -1,79 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/aspectName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mood"
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="40dp" />
+        android:text="Mood" />
 
     <TextView
         android:id="@+id/lastUpdatedLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="last updated 2h ago"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="75dp" />
+        android:text="last updated 2h ago" />
 
     <TextView
         android:id="@+id/aspectValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="825"
-        android:textSize="60sp"
-        tools:layout_editor_absoluteX="135dp"
-        tools:layout_editor_absoluteY="203dp" />
+        android:textSize="60sp" />
 
-    <Button
-        android:id="@+id/subSmallBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-1"
-        tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="317dp" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/subMedBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-10"
-        tools:layout_editor_absoluteX="45dp"
-        tools:layout_editor_absoluteY="397dp" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/subLargeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-100"
-        tools:layout_editor_absoluteX="52dp"
-        tools:layout_editor_absoluteY="482dp" />
+            <Button
+                android:id="@+id/noChangeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aspect_view_no_change_button_text" />
+        </TableRow>
 
-    <Button
-        android:id="@+id/addSmallBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+1"
-        tools:layout_editor_absoluteX="239dp"
-        tools:layout_editor_absoluteY="326dp" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/addMedBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+10"
-        tools:layout_editor_absoluteX="232dp"
-        tools:layout_editor_absoluteY="416dp" />
+            <Button
+                android:id="@+id/subSmallBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aspect_view_sm_dec_button_text" />
 
-    <Button
-        android:id="@+id/addLargeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+100"
-        tools:layout_editor_absoluteX="232dp"
-        tools:layout_editor_absoluteY="485dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/addSmallBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aspect_view_sm_inc_button_text" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/subMedBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aspect_view_md_dec_button_text" />
+
+            <Button
+                android:id="@+id/addMedBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aspect_view_md_inc_button_text" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/subLargeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aspect_view_lg_dec_button_text" />
+
+            <Button
+                android:id="@+id/addLargeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aspect_view_lg_inc_button_text" />
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

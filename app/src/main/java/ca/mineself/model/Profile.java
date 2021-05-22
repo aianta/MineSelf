@@ -40,7 +40,7 @@ public class Profile implements Parcelable {
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
         @Override
-        public Object createFromParcel(Parcel parcel) {
+        public Profile createFromParcel(Parcel parcel) {
             return new Profile(parcel);
         }
 
