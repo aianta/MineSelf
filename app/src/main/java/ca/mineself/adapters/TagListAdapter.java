@@ -6,25 +6,43 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.influxdb.client.InfluxDBClient;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
+import ca.mineself.Influx;
 import ca.mineself.R;
+import ca.mineself.model.Profile;
+import ca.mineself.model.Tag;
 
 public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.TagHolder>  {
 
-    Map<String,String> tags = new LinkedHashMap<>();
+    List<Tag> tags = new ArrayList<>();
 
-    public TagListAdapter addTag(String key){
-        tags.put(key,null);
-        Log.d(getClass().getSimpleName(), "Added new tag: " + key + " tags size: " + tags.size());
+    public TagListAdapter setTags(List<Tag> tags){
+        this.tags = tags;
+        Log.d(getClass().getSimpleName(), "Set tags! Tags size: " + tags.size());
+        notifyDataSetChanged();
+        return this;
+    }
+
+    public TagListAdapter addTag(Tag t){
+        tags.add(t);
+        Log.d(getClass().getSimpleName(), "Added new tag: " + t.key + " tags size: " + tags.size());
         notifyDataSetChanged();
         return this;
     }
@@ -37,20 +55,29 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.TagHolde
     }
 
     public TagListAdapter updateTag(String key, String value){
-        tags.put(key, value);
+        tags.stream().filter(tag -> tag.key.equals(key)).findFirst().get().value = value;
         Log.d(getClass().getSimpleName(), "Updated tag: " + key + " -> " + value);
-        notifyDataSetChanged();
         return this;
     }
 
-    public Map<String,String> getTags(){
+    public List<Tag> getTags(){
         return tags;
     }
 
+    public Map<String,String> getTagsAsMap(){
+        return tags.stream()
+                .collect(
+                        HashMap::new,
+                        (hashMap, tag) -> hashMap.put(tag.key,tag.value),
+                        (hashMap, hashMap2) -> hashMap.putAll(hashMap2)
+                );
+    }
+
     protected class TagChangeWatcher implements TextWatcher{
-        String key;
-        TagChangeWatcher(String key){
-            this.key = key;
+
+        TextView keyLabel;
+        TagChangeWatcher(TextView keyLabel){
+            this.keyLabel = keyLabel;
         }
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -68,7 +95,7 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.TagHolde
                 return;
             }
 
-            updateTag(key, editable.toString());
+            updateTag(keyLabel.getText().toString(), editable.toString());
         }
     }
 
@@ -77,19 +104,31 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.TagHolde
         TextView tagKeyLabel;
         AutoCompleteTextView editTagValue;
         Button deleteTagBtn;
+        List<String> suggestions = new ArrayList<>();
+        ArrayAdapter<String> suggestionAdapter;
 
         public TagHolder(View view, TagListAdapter adapter){
             super(view);
             this.adapter = adapter;
 
+
             tagKeyLabel = view.findViewById(R.id.tagKeyLabel);
             //TODO - hmm this editTagValue ending up null somehow
-            editTagValue = view.findViewWithTag(R.id.editTagValue);
+            editTagValue = view.findViewById(R.id.editTagValue);
             deleteTagBtn = view.findViewById(R.id.deleteTagBtn);
             deleteTagBtn.setOnClickListener(this::removeTag);
 
-            editTagValue.addTextChangedListener(new TagChangeWatcher(tagKeyLabel.getText().toString()));
+            Log.d(getClass().getSimpleName(), editTagValue.toString());
 
+            editTagValue.addTextChangedListener(new TagChangeWatcher(tagKeyLabel));
+
+
+        }
+
+        public void updateTag(Tag t){
+            editTagValue.setAdapter(new ArrayAdapter<>(editTagValue.getContext(), android.R.layout.simple_dropdown_item_1line, t.suggestions));
+            editTagValue.setThreshold(1);
+            t.suggestions.forEach(s->Log.d("suggestion", s));
         }
 
         public void removeTag(View view){
@@ -108,23 +147,17 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.TagHolde
         if(tags.size() == 0){
             return;
         }
+        Log.d("onBindViewHolder", "getting holder @" + position);
 
-        int index = 0;
-        Iterator<Map.Entry<String,String>> it = tags.entrySet().iterator();
-        Map.Entry<String,String> entry = it.next();
-        while (index < position){
-            entry = it.next();
-            Log.d("tag", entry.getKey());
-            index++;
-        }
+        Tag tag = tags.get(position);
+        holder.tagKeyLabel.setText(tag.key);
 
-        holder.tagKeyLabel.setText(entry.getKey());
         //If there is a tag value set it
-        if(entry.getValue() != null && !entry.getValue().isEmpty()){
-            holder.editTagValue.setText(entry.getValue());
+        if(tag.value != null && !tag.value.isEmpty()){
+            holder.editTagValue.setText(tag.value);
         }
 
-
+        holder.updateTag(tag);
     }
 
     public int getItemCount(){

@@ -69,6 +69,11 @@ public class AspectsActivity extends AppCompatActivity {
 
         setContentView(view);
 
+        refreshAspects();
+
+    }
+
+    private void refreshAspects(){
         //Get Aspects
         CompletableFuture.supplyAsync(()->Influx.getAspects(client, profile.name, profile.name))
                 .whenComplete((results, throwable) -> {

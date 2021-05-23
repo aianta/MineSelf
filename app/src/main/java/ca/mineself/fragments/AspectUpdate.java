@@ -2,6 +2,7 @@ package ca.mineself.fragments;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,8 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.write.Point;
 
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import ca.mineself.AspectsActivity;
@@ -33,6 +39,7 @@ import ca.mineself.R;
 import ca.mineself.adapters.TagListAdapter;
 import ca.mineself.model.Aspect;
 import ca.mineself.model.Profile;
+import ca.mineself.model.Tag;
 
 
 public class AspectUpdate extends Fragment {
@@ -171,7 +178,7 @@ public class AspectUpdate extends Fragment {
     public void onStart() {
         super.onStart();
 
-        client = MineSelf.getInstance().openInfluxClient(profile);
+
 
         deltaUpdateUpIcon = getView().findViewById(R.id.deltaUpdateUpIcon);
         deltaUpdateDownIcon = getView().findViewById(R.id.deltaUpdateDownIcon);
@@ -210,11 +217,6 @@ public class AspectUpdate extends Fragment {
 
         createTagLayout = getView().findViewById(R.id.createTagLayout);
 
-        //Setup tag list recycler
-        tagListAdapter = new TagListAdapter();
-        tagsList = getView().findViewById(R.id.tagsList);
-        tagsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        tagsList.setAdapter(tagListAdapter);
     }
 
     @Override
@@ -222,7 +224,26 @@ public class AspectUpdate extends Fragment {
         aspect =  getArguments().getParcelable("aspect");
         profile = getArguments().getParcelable("profile");
         newDelta = getArguments().getLong("newDelta");
+        client = MineSelf.getInstance().openInfluxClient(profile);
         return inflater.inflate(R.layout.aspect_update, container, false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    @Override
+    public void onViewCreated( View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //Setup tag list recycler
+        tagListAdapter = new TagListAdapter();
+        tagsList = getView().findViewById(R.id.tagsList);
+        tagsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        tagsList.setAdapter(tagListAdapter);
+
+
+        tagListAdapter.setTags(CompletableFuture.supplyAsync(()->Influx.getTags(client,profile.name,profile.name))
+                .join());
+
+
     }
 
     //Show tag create UI
@@ -244,12 +265,11 @@ public class AspectUpdate extends Fragment {
         editNewTag.setText(R.string.aspect_update_new_tag_placeholder);
     }
 
-    public void changeValue(View view){
-
-    }
 
     public void createTag(View view){
-        tagListAdapter.addTag(editNewTag.getText().toString());
+        Tag tag = new Tag();
+        tag.key = editNewTag.getText().toString();
+        tagListAdapter.addTag(tag);
         hideNewTagUI(view);
     }
 
@@ -258,7 +278,7 @@ public class AspectUpdate extends Fragment {
         Point dataPoint = aspect.produce(
                 Long.parseLong(editDelta.getText().toString()),
                 editNote.getText().toString(),
-                tagListAdapter.getTags()
+                tagListAdapter.getTagsAsMap()
         );
 
         CompletableFuture.runAsync(()-> Influx.insertPoint(client, profile.name, profile.name, dataPoint))

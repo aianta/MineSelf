@@ -17,6 +17,8 @@ import com.influxdb.client.write.Point;
 import com.influxdb.query.FluxTable;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import ca.mineself.model.Aspect;
+import ca.mineself.model.Tag;
 
 public class Influx {
 
@@ -121,6 +124,81 @@ public class Influx {
             Log.d("Influx", e.getMessage(), e);
         }
 
+    }
+
+    public static List<Tag> getTags(InfluxDBClient client, String bucket, String orgName){
+        String query = "import \"influxdata/influxdb/schema\" " +
+                "schema.tagKeys(bucket:\""+bucket+"\")";
+
+        try{
+            List<FluxTable> tables = client.getQueryApi().query(query, orgName);
+            FluxTable fluxTable = tables.get(0);
+            return fluxTable.getRecords().stream()
+                    .map(record->record.getValueByKey("_value").toString())
+                    /**
+                     * There are a bunch of meta tags like _value, _start, _stop, _field which we're not interested in.
+                     */
+                    .peek(tag->Log.d("Influx","Tag: " + tag))
+                    .filter(tagKey->tagKey.charAt(0) != '_')
+                    .map(key->{
+                        Tag t = new Tag();
+                        t.key = key;
+                        t.suggestions = Influx.getTagValues(client, bucket, t.key, orgName);
+                        return t;
+                    })
+                    .collect(Collectors.toList());
+
+
+        }catch (Exception e){
+            Log.e("Influx", "Error getting tag keys!");
+            Log.e("Influx", e.getMessage(), e);
+        }
+
+        return Collections.emptyList();
+    }
+
+    public static List<String> getTagKeys(InfluxDBClient client, String bucket, String orgName){
+
+        String query = "import \"influxdata/influxdb/schema\" " +
+                "schema.tagKeys(bucket:\""+bucket+"\")";
+
+        try{
+            List<FluxTable> tables = client.getQueryApi().query(query, orgName);
+            FluxTable fluxTable = tables.get(0);
+            return fluxTable.getRecords().stream()
+                    .map(record->record.getValueByKey("_value").toString())
+                    /**
+                     * There are a bunch of meta tags like _value, _start, _stop, _field which we're not interested in.
+                     */
+                    .peek(tag->Log.d("Influx","Tag: " + tag))
+                    .filter(tagKey->tagKey.charAt(0) != '_')
+                    .collect(Collectors.toList());
+
+
+        }catch (Exception e){
+            Log.e("Influx", "Error getting tag keys!");
+            Log.e("Influx", e.getMessage(), e);
+        }
+
+        return Collections.emptyList();
+    }
+
+    public static List<String> getTagValues(InfluxDBClient client, String bucket, String tag, String orgName){
+        String query = "import \"influxdata/influxdb/schema\" " +
+                "schema.tagValues(bucket:\""+bucket+"\",tag:\""+tag+"\")";
+
+        try{
+            List<FluxTable> tables = client.getQueryApi().query(query,orgName);
+            FluxTable fluxTable = tables.get(0);
+            return fluxTable.getRecords().stream()
+                    .map(record->record.getValueByKey("_value").toString())
+                    .collect(Collectors.toList());
+        }catch (Exception e){
+            Log.e("Influx","Error getting tag values!");
+            Log.e("Influx", e.getMessage(), e);
+        }
+
+        return Collections.emptyList();
     }
 
 
