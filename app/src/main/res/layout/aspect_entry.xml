@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -7,21 +8,54 @@
     <TextView
         android:id="@+id/aspectNameLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/aspect_entry_name_placeholder" />
 
-    <TextView
-        android:id="@+id/aspectDeltaLabel"
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/aspect_entry_delta_placeholder" />
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/deltaNeutralIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:srcCompat="@drawable/delta_neutral" />
+
+            <ImageView
+                android:id="@+id/deltaUpIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:srcCompat="@drawable/delta_up" />
+
+            <ImageView
+                android:id="@+id/deltaDownIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:srcCompat="@drawable/delta_down" />
+
+            <TextView
+                android:id="@+id/aspectDeltaLabel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/aspect_entry_delta_placeholder" />
+        </TableRow>
+
+    </TableLayout>
 
     <TextView
         android:id="@+id/aspectValueLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/aspect_entry_value_placeholder" />
 </LinearLayout>

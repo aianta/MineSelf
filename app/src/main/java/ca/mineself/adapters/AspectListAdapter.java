@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,12 +33,18 @@ public class AspectListAdapter extends RecyclerView.Adapter<AspectListAdapter.As
         TextView nameLabel;
         TextView deltaLabel;
         TextView valueLabel;
+        ImageView deltaUpIcon;
+        ImageView deltaDownIcon;
+        ImageView deltaNeutralIcon;
 
         public AspectHolder(View view){
             super(view);
             nameLabel = view.findViewById(R.id.aspectNameLabel);
             deltaLabel = view.findViewById(R.id.aspectDeltaLabel);
             valueLabel = view.findViewById(R.id.aspectValueLabel);
+            deltaUpIcon = view.findViewById(R.id.deltaUpIcon);
+            deltaDownIcon = view.findViewById(R.id.deltaDownIcon);
+            deltaNeutralIcon = view.findViewById(R.id.deltaNeutralIcon);
             view.setOnClickListener(this::onClick);
         }
 
@@ -74,9 +81,25 @@ public class AspectListAdapter extends RecyclerView.Adapter<AspectListAdapter.As
         if(aspects.get(position) == null){
             return;
         }
+
+
         holder.nameLabel.setText(aspects.get(position).name);
         holder.deltaLabel.setText(Long.toString(aspects.get(position).delta));
         holder.valueLabel.setText(Long.toString(aspects.get(position).value));
+
+        //Setup delta icon
+        if(aspects.get(position).delta > 0){
+            holder.deltaUpIcon.setVisibility(View.VISIBLE);
+        }
+
+        if(aspects.get(position).delta < 0){
+            holder.deltaDownIcon.setVisibility(View.VISIBLE);
+        }
+
+        if(aspects.get(position).delta == 0){
+            holder.deltaNeutralIcon.setVisibility(View.VISIBLE);
+        }
+
         holder.aspect = aspects.get(position);
         holder.profile = profile;
     }

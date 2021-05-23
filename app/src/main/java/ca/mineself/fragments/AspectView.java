@@ -68,6 +68,7 @@ public class AspectView extends Fragment {
         aspectValueLabel.setText(Long.toString(aspect.value));
 
         lastUpdateLabel = getView().findViewById(R.id.lastUpdatedLabel);
+        lastUpdateLabel.setText(aspect.getLastUpdatedString());
 
         subSmallBtn = getView().findViewById(R.id.subSmallBtn);
         subMedBtn = getView().findViewById(R.id.subMedBtn);

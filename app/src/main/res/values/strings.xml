@@ -10,7 +10,7 @@
     <string name="profile_create_host_label">Host</string>
     <string name="profile_create_token_label">Token</string>
     <string name="profile_create_host_placeholder">http://192.168.2.18:8086</string>
-    <string name="profile_create_token_placeholder">Qa3g8b8-F-wXvHfSUQM_KCnUWbbamos2LCogp7yyZX4ON2jZnaj_H8itLnM2VcKMhBdBmi1fKIqqje7mTzvvxA==</string>
+    <string name="profile_create_token_placeholder">b3_jGCPGKcIsuaHYmNhkpboeRmcgC9tqx9S0iNRJU60eAOVFoLE2fI6gcuQucm6GHJTgaJtXtvQbm-s0n6ajMw==</string>
     <string name="profile_create_btn_text">Create</string>
     <string name="aspects_header">My Aspects</string>
     <string name="aspects_to_splash_btn">Profiles</string>

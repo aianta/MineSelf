@@ -3,30 +3,31 @@ package ca.mineself;
 
 import android.util.Log;
 
+
 import com.influxdb.client.BucketsApi;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.OrganizationsApi;
 import com.influxdb.client.WriteApi;
-import com.influxdb.client.WriteOptions;
+
 import com.influxdb.client.domain.Bucket;
 import com.influxdb.client.domain.Organization;
-import com.influxdb.client.domain.Query;
-import com.influxdb.client.domain.User;
-import com.influxdb.client.domain.WritePrecision;
+
 import com.influxdb.client.write.Point;
-import com.influxdb.query.FluxRecord;
+
 import com.influxdb.query.FluxTable;
 
+
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import ca.mineself.model.Aspect;
-import ca.mineself.model.Profile;
 
 public class Influx {
+
 
     public static class InfluxRequest<T> implements Callable<T> {
         private Supplier<T> request;
@@ -89,6 +90,7 @@ public class Influx {
         try{
             List<FluxTable> tables = client.getQueryApi().query(query, orgName);
             for(FluxTable fluxTable: tables){
+                result.lastUpdate = Date.from(fluxTable.getRecords().get(0).getTime());
                 switch (fluxTable.getRecords().get(0).getField()){
                     case "value":
                         result.value = (long)fluxTable.getRecords().get(0).getValue();

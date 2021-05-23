@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.influxdb.client.InfluxDBClient;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import ca.mineself.adapters.AspectListAdapter;
@@ -110,6 +112,7 @@ public class AspectsActivity extends AppCompatActivity {
         aspect.name = newAspectName.getText().toString();
         aspect.value = Integer.parseInt(newAspectValue.getText().toString());
         aspect.delta = 0;
+        aspect.lastUpdate = Date.from(Instant.now());
 
         aspectListAdapter.addAspect(aspect);
 

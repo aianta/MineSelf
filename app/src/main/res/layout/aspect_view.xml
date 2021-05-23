@@ -10,7 +10,8 @@
         android:id="@+id/aspectName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mood" />
+        android:text="Mood"
+        android:textSize="40sp" />
 
     <TextView
         android:id="@+id/lastUpdatedLabel"

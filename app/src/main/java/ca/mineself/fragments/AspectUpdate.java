@@ -1,13 +1,17 @@
 package ca.mineself.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
@@ -17,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.write.Point;
+
+import org.w3c.dom.Text;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -40,6 +46,10 @@ public class AspectUpdate extends Fragment {
     EditText editNote;
     EditText editNewTag;
 
+    ImageView deltaUpdateUpIcon;
+    ImageView deltaUpdateDownIcon;
+    ImageView deltaUpdateNeutralIcon;
+
     Button addTagBtn;
     Button createTagBtn;
     Button updateBtn;
@@ -52,18 +62,136 @@ public class AspectUpdate extends Fragment {
 
     InfluxDBClient client;
 
+    protected class AspectDeltaWatcher implements TextWatcher{
+        Aspect aspect;
+        EditText editValue;
+        EditText editDelta;
+        ImageView deltaUpdateDownIcon;
+        ImageView deltaUpdateUpIcon;
+        ImageView deltaUpdateNeutralIcon;
+
+        public AspectDeltaWatcher(Aspect aspect,
+                                  EditText editValue,
+                                  EditText editDelta,
+                                  ImageView deltaUpdateUpIcon,
+                                  ImageView deltaUpdateDownIcon,
+                                  ImageView deltaUpdateNeutralIcon){
+            this.aspect = aspect;
+            this.editValue = editValue;
+            this.editDelta = editDelta;
+            this.deltaUpdateNeutralIcon = deltaUpdateNeutralIcon;
+            this.deltaUpdateDownIcon = deltaUpdateDownIcon;
+            this.deltaUpdateUpIcon = deltaUpdateUpIcon;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if(editable.toString().isEmpty()){
+                return;
+            }
+
+            try{
+                if(Long.parseLong(editable.toString()) < 0){
+                    editDelta.setTextColor(Color.RED);
+                    deltaUpdateDownIcon.setVisibility(View.VISIBLE);
+                    deltaUpdateNeutralIcon.setVisibility(View.GONE);
+                    deltaUpdateUpIcon.setVisibility(View.GONE);
+                }
+                if(Long.parseLong(editable.toString()) == 0){
+                    editDelta.setTextColor(Color.GRAY);
+                    deltaUpdateNeutralIcon.setVisibility(View.VISIBLE);
+                    deltaUpdateUpIcon.setVisibility(View.GONE);
+                    deltaUpdateDownIcon.setVisibility(View.GONE);
+                }
+                if(Long.parseLong(editable.toString()) > 0) {
+                    editDelta.setTextColor(Color.GREEN);
+                    deltaUpdateUpIcon.setVisibility(View.VISIBLE);
+                    deltaUpdateDownIcon.setVisibility(View.GONE);
+                    deltaUpdateNeutralIcon.setVisibility(View.GONE);
+                }
+
+                //Update value if it's something different
+                if(aspect.value + Long.parseLong(editable.toString()) != Long.parseLong(editValue.getText().toString())){
+                    editValue.setText(Long.toString(aspect.value + Long.parseLong(editable.toString())));
+                }
+            }catch (NumberFormatException nfe){
+                Log.d(getClass().getSimpleName(), "Number format exception while processing delta value");
+                return;
+            }
+
+        }
+    }
+
+    protected class AspectValueWatcher implements TextWatcher {
+        Aspect aspect;
+        EditText editValue;
+        EditText editDelta;
+
+        public AspectValueWatcher(Aspect aspect, EditText editValue, EditText editDelta){
+            this.aspect = aspect;
+            this.editValue = editValue;
+            this.editDelta = editDelta;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if(editable.toString().isEmpty()){
+                return;
+            }
+            Long newDelta = Long.parseLong(editable.toString()) - aspect.value;
+            //Update delta if it's something different
+            if (Long.parseLong(editDelta.getText().toString()) != newDelta){
+                editDelta.setText(Long.toString(newDelta));
+            }
+
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
 
         client = MineSelf.getInstance().openInfluxClient(profile);
 
+        deltaUpdateUpIcon = getView().findViewById(R.id.deltaUpdateUpIcon);
+        deltaUpdateDownIcon = getView().findViewById(R.id.deltaUpdateDownIcon);
+        deltaUpdateNeutralIcon = getView().findViewById(R.id.deltaUpdateNeutralIcon);
+
+        Log.d(getClass().getSimpleName(), deltaUpdateDownIcon.toString());
+
         //Map UI
         editDelta = getView().findViewById(R.id.editDelta);
+        editValue = getView().findViewById(R.id.editValue);
+
+
+        editDelta.addTextChangedListener(new AspectDeltaWatcher(
+                aspect, editValue, editDelta, deltaUpdateUpIcon, deltaUpdateDownIcon, deltaUpdateNeutralIcon));
         editDelta.setText(Long.toString(newDelta));
 
-        editValue = getView().findViewById(R.id.editValue);
+
+
         editValue.setText(Long.toString(newDelta + aspect.value));
+        editValue.addTextChangedListener(new AspectValueWatcher(aspect, editValue, editDelta));
 
         editNote = getView().findViewById(R.id.editNote);
         editNote.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(editNote)::onFocusChange);
@@ -76,6 +204,7 @@ public class AspectUpdate extends Fragment {
 
         createTagBtn = getView().findViewById(R.id.createNewTagBtn);
         createTagBtn.setOnClickListener(this::createTag);
+
         updateBtn = getView().findViewById(R.id.updateBtn);
         updateBtn.setOnClickListener(this::updateAspect);
 
@@ -115,6 +244,10 @@ public class AspectUpdate extends Fragment {
         editNewTag.setText(R.string.aspect_update_new_tag_placeholder);
     }
 
+    public void changeValue(View view){
+
+    }
+
     public void createTag(View view){
         tagListAdapter.addTag(editNewTag.getText().toString());
         hideNewTagUI(view);
@@ -133,6 +266,7 @@ public class AspectUpdate extends Fragment {
                     Log.d(getClass().getSimpleName(), "data point sent!");
 
                     Intent backToAspects = new Intent(getContext(), AspectsActivity.class);
+                    backToAspects.putExtra("profile", profile);
                     startActivity(backToAspects);
                 });
     }

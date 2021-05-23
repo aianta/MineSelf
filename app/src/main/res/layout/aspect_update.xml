@@ -6,13 +6,47 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editDelta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="numberSigned"
-        android:text="@string/aspect_update_delta_placeholder" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/deltaUpdateUpIcon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="gone"
+                app:srcCompat="@drawable/delta_up" />
+
+            <ImageView
+                android:id="@+id/deltaUpdateNeutralIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="gone"
+                app:srcCompat="@drawable/delta_neutral" />
+
+            <ImageView
+                android:id="@+id/deltaUpdateDownIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="gone"
+                app:srcCompat="@drawable/delta_down" />
+
+            <EditText
+                android:id="@+id/editDelta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberSigned"
+                android:text="@string/aspect_update_delta_placeholder" />
+        </TableRow>
+    </TableLayout>
 
     <EditText
         android:id="@+id/editValue"

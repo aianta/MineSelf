@@ -10,6 +10,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -33,6 +34,8 @@ dependencies {
 
     // Java language implementation
     implementation "androidx.fragment:fragment:$fragment_version"
+
+
 
 
     implementation 'org.conscrypt:conscrypt-openjdk-uber:2.5.2'
