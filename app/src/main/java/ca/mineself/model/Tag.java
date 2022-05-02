@@ -16,6 +16,14 @@ public class Tag {
         this.key = key;
     }
 
+    public void clear(){
+        this.value = null;
+    }
+
+    public boolean isEmpty(){
+        return value == null;
+    }
+
     public void print(){
         String result = key + " - " + (value!=null?value:"null ") + " [";
         for(String suggestion:suggestions){
@@ -23,5 +31,18 @@ public class Tag {
         }
         result +="]";
         Log.d("Tag", result );
+    }
+
+    public boolean equals(Object o){
+        if(!(o instanceof Tag)){
+            return false;
+        }
+
+        Tag otherTag = (Tag)o;
+        return this.key.equals(otherTag.key);
+    }
+
+    public int hashCode(){
+        return this.key.hashCode();
     }
 }

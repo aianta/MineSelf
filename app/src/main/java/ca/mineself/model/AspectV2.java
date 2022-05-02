@@ -1,8 +1,11 @@
 package ca.mineself.model;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 
 import ca.mineself.exceptions.InsufficientHistory;
@@ -10,23 +13,39 @@ import ca.mineself.persistence.AspectV2Listener;
 
 public class AspectV2 {
 
-    Instant created; //Instant when the aspect was created
-    String name;
-    Deque<Entry> entries;
-    AspectV2Listener listener;
+    private Instant created; //Instant when the aspect was created
+    private String name;
+    private Deque<Entry> entries;
+    private AspectV2Listener listener;
 
     /**
      * Like a schema for the aspect.
      * Contains the tags which entries of this aspect must have.
      */
-    String [] tagKeys;
+    private final String [] tagKeys;
 
+    private AspectV2(Builder builder){
+        this.name = builder.name;
+        this.created = builder.timestamp;
+        this.tagKeys = builder.tagKeys();
+        this.listener = builder.listener;
+        this.entries = builder.entries;
+    }
+
+
+    public String getName(){
+        return name;
+    }
+
+    public Instant getCreated(){
+        return created;
+    }
 
     public int lastValue() throws InsufficientHistory {
         if(entries.isEmpty()){
             throw new InsufficientHistory("Need at least 1 entry to compute last value");
         }
-        return entries.peekFirst().value;
+        return entries.peekFirst().getValue();
     }
 
     /**
@@ -37,7 +56,7 @@ public class AspectV2 {
         if(entries.isEmpty()){
             throw new InsufficientHistory("Need at least 1 entry to compute last updated timestamp");
         }
-        return entries.getLast().timestamp;
+        return entries.getLast().getTimestamp();
     }
 
     /**
@@ -54,7 +73,7 @@ public class AspectV2 {
         Entry latest = it.next();
         Entry secondLatest = it.next();
 
-        return latest.value - secondLatest.value;
+        return latest.getValue() - secondLatest.getValue();
     }
 
     /**
@@ -75,4 +94,49 @@ public class AspectV2 {
         this.listener = listener;
     }
 
+    public static class Builder{
+        private final String name;
+        private final Instant timestamp;
+        private List<String> tags = new ArrayList<>();
+        private Deque<Entry> entries = new LinkedList<>();
+        private AspectV2Listener listener;
+
+        public Builder(String name){
+            this.name = name;
+            this.timestamp = Instant.now();
+        }
+
+        public Builder addEntry(Entry e){
+            entries.addLast(e);
+            return this;
+        }
+
+        public Builder addTag(String key){
+            tags.add(key);
+            return this;
+        }
+
+        public Builder listener(AspectV2Listener listener){
+            this.listener = listener;
+            return this;
+        }
+
+        private void validate(AspectV2 aspect){
+
+        }
+
+        private String [] tagKeys(){
+            String [] result = new String[tags.size()];
+            return tags.toArray(result);
+        }
+
+        public AspectV2 build(){
+            //Sort entries chronologically before creating the aspect.
+            entries.stream().sorted(Entry::compareTo);
+            AspectV2 result = new AspectV2(this);
+            validate(result);
+            return result;
+        }
+
+    }
 }
