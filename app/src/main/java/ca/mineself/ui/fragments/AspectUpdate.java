@@ -1,4 +1,4 @@
-package ca.mineself.fragments;
+package ca.mineself.ui.fragments;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,8 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,17 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.write.Point;
 
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
-
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import ca.mineself.AspectsActivity;
+import ca.mineself.ui.AspectsActivity;
 import ca.mineself.Influx;
 import ca.mineself.MineSelf;
 import ca.mineself.R;
-import ca.mineself.adapters.TagListAdapter;
+import ca.mineself.ui.adapters.TagListAdapter;
 import ca.mineself.model.Aspect;
 import ca.mineself.model.Profile;
 import ca.mineself.model.Tag;

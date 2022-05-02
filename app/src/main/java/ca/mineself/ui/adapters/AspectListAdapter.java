@@ -1,4 +1,4 @@
-package ca.mineself.adapters;
+package ca.mineself.ui.adapters;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mineself.AspectActivity;
+import ca.mineself.ui.AspectActivity;
 import ca.mineself.R;
 import ca.mineself.model.Aspect;
 import ca.mineself.model.Profile;

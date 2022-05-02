@@ -1,4 +1,4 @@
-package ca.mineself.adapters;
+package ca.mineself.ui.adapters;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,19 +14,12 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.influxdb.client.InfluxDBClient;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
-import ca.mineself.Influx;
 import ca.mineself.R;
-import ca.mineself.model.Profile;
 import ca.mineself.model.Tag;
 
 public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.TagHolder>  {

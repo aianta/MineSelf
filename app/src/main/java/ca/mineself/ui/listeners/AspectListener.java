@@ -1,4 +1,4 @@
-package ca.mineself.listeners;
+package ca.mineself.ui.listeners;
 
 public interface AspectListener {
 

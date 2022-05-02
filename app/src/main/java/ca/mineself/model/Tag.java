@@ -10,6 +10,12 @@ public class Tag {
     public String value;
     public List<String> suggestions = new ArrayList<>();
 
+    public Tag(){};
+
+    public Tag(String key){
+        this.key = key;
+    }
+
     public void print(){
         String result = key + " - " + (value!=null?value:"null ") + " [";
         for(String suggestion:suggestions){

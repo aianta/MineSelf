@@ -1,4 +1,4 @@
-package ca.mineself;
+package ca.mineself.ui;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,9 +7,10 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import ca.mineself.fragments.AspectUpdate;
-import ca.mineself.fragments.AspectView;
-import ca.mineself.listeners.AspectListener;
+import ca.mineself.R;
+import ca.mineself.ui.fragments.AspectUpdate;
+import ca.mineself.ui.fragments.AspectView;
+import ca.mineself.ui.listeners.AspectListener;
 import ca.mineself.model.Aspect;
 import ca.mineself.model.Profile;
 

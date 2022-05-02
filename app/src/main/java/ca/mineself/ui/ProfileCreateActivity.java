@@ -1,4 +1,4 @@
-package ca.mineself;
+package ca.mineself.ui;
 
 import android.app.TaskStackBuilder;
 import android.content.Intent;
@@ -9,7 +9,10 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import ca.mineself.MineSelf;
+import ca.mineself.R;
 import ca.mineself.model.Profile;
+import ca.mineself.ui.AspectsActivity;
 
 public class ProfileCreateActivity extends AppCompatActivity {
 

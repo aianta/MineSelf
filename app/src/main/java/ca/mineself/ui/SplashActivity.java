@@ -1,4 +1,4 @@
-package ca.mineself;
+package ca.mineself.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ca.mineself.MineSelf;
 import ca.mineself.R;
-import ca.mineself.adapters.ProfileListAdapter;
-import ca.mineself.model.Profile;
+import ca.mineself.ui.ProfileCreateActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package ca.mineself.fragments;
+package ca.mineself.ui.fragments;
 
 
 import android.content.Context;
@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 
 import ca.mineself.R;
-import ca.mineself.listeners.AspectListener;
+import ca.mineself.ui.listeners.AspectListener;
 import ca.mineself.model.Aspect;
 
 public class AspectView extends Fragment {

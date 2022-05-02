@@ -11,20 +11,20 @@
         android:theme="@style/AppTheme"
         android:networkSecurityConfig="@xml/dev_security_config"
         >
-        <activity android:name=".SplashActivity"
+        <activity android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileCreateActivity"
+        <activity android:name=".ui.ProfileCreateActivity"
             android:label="@string/app_name">
         </activity>
-        <activity android:name=".AspectsActivity"
+        <activity android:name=".ui.AspectsActivity"
             android:label="@string/app_name">
         </activity>
-        <activity android:name=".AspectActivity"
+        <activity android:name=".ui.AspectActivity"
             android:label="@string/app_name">
         </activity>
 

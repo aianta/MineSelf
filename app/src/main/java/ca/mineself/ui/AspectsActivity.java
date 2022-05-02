@@ -1,4 +1,4 @@
-package ca.mineself;
+package ca.mineself.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +18,10 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
-import ca.mineself.adapters.AspectListAdapter;
+import ca.mineself.Influx;
+import ca.mineself.MineSelf;
+import ca.mineself.R;
+import ca.mineself.ui.adapters.AspectListAdapter;
 import ca.mineself.model.Aspect;
 import ca.mineself.model.Profile;
 
@@ -79,7 +82,7 @@ public class AspectsActivity extends AppCompatActivity {
 
     private void refreshAspects(){
         //Get Aspects
-        aspectListAdapter.setAspects(CompletableFuture.supplyAsync(()->Influx.getAspects(client, profile.name, profile.orgId)).join());
+        aspectListAdapter.setAspects(CompletableFuture.supplyAsync(()-> Influx.getAspects(client, profile.name, profile.orgId)).join());
     }
 
     //For onClick invoke

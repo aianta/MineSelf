@@ -7,7 +7,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/aspectFragmentContainer"
-        android:name="ca.mineself.fragments.AspectView"
+        android:name="ca.mineself.ui.fragments.AspectView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="15dp"

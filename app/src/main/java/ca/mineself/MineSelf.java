@@ -6,16 +6,10 @@ import android.widget.EditText;
 
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
-import com.influxdb.client.domain.Organization;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
-import ca.mineself.adapters.AspectListAdapter;
-import ca.mineself.adapters.ProfileListAdapter;
+import ca.mineself.ui.adapters.ProfileListAdapter;
 import ca.mineself.model.Profile;
 
 /**

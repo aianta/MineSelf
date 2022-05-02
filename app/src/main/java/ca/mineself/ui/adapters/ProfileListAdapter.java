@@ -1,7 +1,6 @@
-package ca.mineself.adapters;
+package ca.mineself.ui.adapters;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +10,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import ca.mineself.AspectsActivity;
+import ca.mineself.ui.AspectsActivity;
 import ca.mineself.R;
 import ca.mineself.model.Profile;
 
