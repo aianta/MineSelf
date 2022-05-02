@@ -16,6 +16,7 @@ public class ProfileCreateActivity extends AppCompatActivity {
     EditText name;
     EditText host;
     EditText token;
+    EditText orgId;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -26,6 +27,7 @@ public class ProfileCreateActivity extends AppCompatActivity {
         //Register UI components
         name = view.findViewById(R.id.editProfileName);
         host = view.findViewById(R.id.editHost);
+        orgId = view.findViewById(R.id.editOrg);
         token = view.findViewById(R.id.editToken);
 
 
@@ -34,6 +36,7 @@ public class ProfileCreateActivity extends AppCompatActivity {
         name.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(name)::onFocusChange);
         host.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(host)::onFocusChange);
         token.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(token)::onFocusChange);
+        orgId.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(orgId)::onFocusChange);
 
         setContentView(view);
     }
@@ -44,6 +47,7 @@ public class ProfileCreateActivity extends AppCompatActivity {
         profile.name = name.getText().toString();
         profile.host = host.getText().toString();
         profile.token = token.getText().toString();
+        profile.orgId = orgId.getText().toString();
 
         MineSelf.getInstance().getProfileList().addProfile(profile);
 

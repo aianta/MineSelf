@@ -5,17 +5,20 @@
     <string name="delete_button_text">x</string>
     <string name="confirm_button_text">Ok</string>
 <!--    <string name="profile_create_name_placeholder">Enter a profile name...</string>-->
-    <string name="profile_create_name_placeholder">Alex</string>
+    <string name="profile_create_name_placeholder">AlexDemo</string>
     <string name="profile_create_db_settings_header">InfluxDB Settings</string>
     <string name="profile_create_host_label">Host</string>
+    <string name="profile_create_org_label">Org</string>
     <string name="profile_create_token_label">Token</string>
-    <string name="profile_create_host_placeholder">http://192.168.2.18:8086</string>
-    <string name="profile_create_token_placeholder">b3_jGCPGKcIsuaHYmNhkpboeRmcgC9tqx9S0iNRJU60eAOVFoLE2fI6gcuQucm6GHJTgaJtXtvQbm-s0n6ajMw==</string>
+    <string name="profile_create_host_placeholder">https://eastus-1.azure.cloud2.influxdata.com</string>
+    <string name="profile_create_org_placeholder">95e1d1ad137ece8b</string>
+    <string name="profile_create_token_placeholder">lcK8yn0y0h7PM8TPp0Lg4B8biIDOmix9JUfdB0e34cHjw-YGHVyuhvmnM5fv66ftKf9_M4pY5QAy-HDNQ24axw==</string>
     <string name="profile_create_btn_text">Create</string>
     <string name="aspects_header">My Aspects</string>
     <string name="aspects_to_splash_btn">Profiles</string>
     <string name="aspects_new_aspect_name_placeholder">Enter Aspect Name...</string>
     <string name="aspects_new_aspect_value_placeholder">Initial Value</string>
+    <string name="aspects_refresh_button_text">Refresh</string>
     <string name="aspect_entry_name_placeholder">[Name]</string>
     <string name="aspect_entry_delta_placeholder">[Delta]</string>
     <string name="aspect_entry_value_placeholder">[Value]</string>

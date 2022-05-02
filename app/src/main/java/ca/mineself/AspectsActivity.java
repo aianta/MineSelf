@@ -29,6 +29,7 @@ public class AspectsActivity extends AppCompatActivity {
     EditText newAspectValue;
     Button newAspectButton;
     Button confirmNewAspectButton;
+    Button refreshAspectsButton;
 
     boolean showCreate = false;
 
@@ -57,6 +58,9 @@ public class AspectsActivity extends AppCompatActivity {
         newAspectName = view.findViewById(R.id.editNewAspectName);
         newAspectValue = view.findViewById(R.id.editNewAspectValue);
 
+        refreshAspectsButton = view.findViewById(R.id.refreshBtn);
+        refreshAspectsButton.setOnClickListener(this::refreshAspects);
+
         //Auto-clear on focus for new aspect name and value
         newAspectName.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(newAspectName)::onFocusChange);
         newAspectValue.setOnFocusChangeListener(new MineSelf.AutoClearingEditText(newAspectValue)::onFocusChange);
@@ -75,11 +79,12 @@ public class AspectsActivity extends AppCompatActivity {
 
     private void refreshAspects(){
         //Get Aspects
-        CompletableFuture.supplyAsync(()->Influx.getAspects(client, profile.name, profile.name))
-                .whenComplete((results, throwable) -> {
-                    aspectListAdapter.setAspects(results);
-                    Log.d(getClass().getSimpleName(),"Loaded Aspects from InfluxDB");
-                });
+        aspectListAdapter.setAspects(CompletableFuture.supplyAsync(()->Influx.getAspects(client, profile.name, profile.orgId)).join());
+    }
+
+    //For onClick invoke
+    public void refreshAspects(View view){
+        refreshAspects();
     }
 
     public void toSplash(View view){
@@ -123,7 +128,7 @@ public class AspectsActivity extends AppCompatActivity {
 
         //Insert initial point into influxdb
         CompletableFuture
-                .runAsync(()->Influx.insertPoint(client,profile.name, profile.name,aspect.produce("Auto-generated initial point")))
+                .runAsync(()->Influx.insertPoint(client,profile.name, profile.orgId,aspect.produce("Auto-generated initial point")))
                 .handle((unused, throwable) -> Log.d(getClass().getSimpleName(), "Inserted initial point for " + aspect.name));
 
         hideNewAspectUI(v);

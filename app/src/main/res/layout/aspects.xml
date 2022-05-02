@@ -14,14 +14,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/toProfilesBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="toSplash"
-            android:text="@string/aspects_to_splash_btn" />
-
         <TextView
             android:id="@+id/aspectsHeader"
             android:layout_width="wrap_content"
@@ -36,6 +28,14 @@
             android:layout_marginBottom="8dp"
             android:onClick="showNewAspectUI"
             android:text="@string/add_button_text" />
+
+        <Button
+            android:id="@+id/refreshBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="refresh"
+            android:text="@string/aspects_refresh_button_text" />
 
     </LinearLayout>
 
@@ -81,5 +81,12 @@
         android:layout_marginTop="0dp">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/toProfilesBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="toSplash"
+        android:text="@string/aspects_to_splash_btn" />
 
 </LinearLayout>

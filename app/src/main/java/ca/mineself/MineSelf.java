@@ -70,17 +70,27 @@ public class MineSelf {
 
         client = InfluxDBClientFactory.create(profile.host, profile.token.toCharArray());
 
-        CompletableFuture.supplyAsync(()->Influx.findOrCreateOrg(client, profile.name))
-                .thenApply(organization -> {
-                    profile.orgId = organization.getId();
-                    return profile;
-                })
-                .thenApplyAsync(p->Influx.findOrCreateBucket(client,p.name, p.orgId))
-                .thenApply(bucket -> {
-                    profile.bucketId = bucket.getId();
-                    return profile;
-                }).handle((unused, throwable) -> Log.d("Influx", "Done!")
-        );
+        if(profile.orgId == null){
+            CompletableFuture.supplyAsync(()->Influx.findOrCreateOrg(client, profile.name))
+                    .thenApply(organization -> {
+                        profile.orgId = organization.getId();
+                        return profile;
+                    })
+                    .thenApplyAsync(p->Influx.findOrCreateBucket(client,p.name, p.orgId))
+                    .thenApply(bucket -> {
+                        profile.bucketId = bucket.getId();
+                        return profile;
+                    }).handle((unused, throwable) -> Log.d("Influx", "Done!")
+            );
+        }else{
+            CompletableFuture.supplyAsync(()->Influx.findOrCreateBucket(client,profile.name, profile.orgId))
+                    .thenApply(bucket -> {
+                        profile.bucketId = bucket.getId();
+                        return profile;
+                    }).handle((unused, throwable) -> Log.d("Influx", "Done!"));
+        }
+
+
 
         return client;
     }

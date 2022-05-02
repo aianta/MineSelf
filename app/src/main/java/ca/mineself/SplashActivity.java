@@ -22,6 +22,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
+
+
         View view = getLayoutInflater().inflate(R.layout.splash_screen, findViewById(R.id.content));
 
         profiles = (RecyclerView) view.findViewById(R.id.profileList);

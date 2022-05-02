@@ -90,6 +90,8 @@ public class Influx {
                 "|> filter(fn: (r)=> r._measurement == \""+aspectName+"\" and (r._field ==\"value\" or r._field == \"delta\")) " +
                 "|> last()";
 
+        Log.d("query", query);
+
         try{
             List<FluxTable> tables = client.getQueryApi().query(query, orgName);
             for(FluxTable fluxTable: tables){

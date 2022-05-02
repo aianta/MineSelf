@@ -13,6 +13,9 @@ import ca.mineself.listeners.AspectListener;
 import ca.mineself.model.Aspect;
 import ca.mineself.model.Profile;
 
+/**
+ * The aspect activity provides read and edit/update functionality for an aspect.
+ */
 public class AspectActivity extends AppCompatActivity implements AspectListener {
 
     Profile profile;

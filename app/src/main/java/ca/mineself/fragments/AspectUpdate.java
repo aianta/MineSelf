@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,8 @@ public class AspectUpdate extends Fragment {
     Profile profile;
     Aspect aspect;
     long newDelta;
+
+    TextView header;
 
     EditText editDelta;
     EditText editValue;
@@ -178,6 +181,8 @@ public class AspectUpdate extends Fragment {
     public void onStart() {
         super.onStart();
 
+        header = getView().findViewById(R.id.aspectUpdateHeader);
+        header.setText(aspect.name);
 
 
         deltaUpdateUpIcon = getView().findViewById(R.id.deltaUpdateUpIcon);
@@ -240,7 +245,7 @@ public class AspectUpdate extends Fragment {
         tagsList.setAdapter(tagListAdapter);
 
 
-        tagListAdapter.setTags(CompletableFuture.supplyAsync(()->Influx.getTags(client,profile.name,profile.name))
+        tagListAdapter.setTags(CompletableFuture.supplyAsync(()->Influx.getTags(client,profile.name,profile.orgId))
                 .join());
 
 
@@ -281,7 +286,7 @@ public class AspectUpdate extends Fragment {
                 tagListAdapter.getTagsAsMap()
         );
 
-        CompletableFuture.runAsync(()-> Influx.insertPoint(client, profile.name, profile.name, dataPoint))
+        CompletableFuture.runAsync(()-> Influx.insertPoint(client, profile.name, profile.orgId, dataPoint))
                 .thenRun(() -> {
                     Log.d(getClass().getSimpleName(), "data point sent!");
 

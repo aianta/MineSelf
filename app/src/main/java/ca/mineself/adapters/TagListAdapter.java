@@ -66,6 +66,7 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.TagHolde
 
     public Map<String,String> getTagsAsMap(){
         return tags.stream()
+                .filter(t->!t.value.isEmpty())
                 .collect(
                         HashMap::new,
                         (hashMap, tag) -> hashMap.put(tag.key,tag.value),
