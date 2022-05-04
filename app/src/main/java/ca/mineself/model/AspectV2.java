@@ -6,9 +6,12 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 import ca.mineself.exceptions.InsufficientHistory;
+import ca.mineself.exceptions.InvalidEntry;
+import ca.mineself.exceptions.MissingAspectName;
 import ca.mineself.persistence.AspectV2Listener;
 
 public class AspectV2 {
@@ -84,10 +87,20 @@ public class AspectV2 {
         return tagKeys;
     }
 
-    public void update(Entry e){
-        listener.onBeforeUpdate(this, e);
+    public void update(Entry e) throws InvalidEntry {
+        if(!e.getParent().equals(this)){
+            throw new InvalidEntry("Cannot add entry because this aspect is not its parent.");
+        }
+
+        if(listener != null){
+            listener.onBeforeUpdate(this, e);
+        }
+
         entries.push(e);
-        listener.onAfterUpdate(this, entries);
+
+        if(listener != null){
+            listener.onAfterUpdate(this, entries);
+        }
     }
 
     void setAspectV2Listener(AspectV2Listener listener){
@@ -106,8 +119,9 @@ public class AspectV2 {
             this.timestamp = Instant.now();
         }
 
-        public Builder addEntry(Entry e){
-            entries.addLast(e);
+
+        public Builder addTags(List<String> tags){
+            this.tags.addAll(tags);
             return this;
         }
 
@@ -121,8 +135,10 @@ public class AspectV2 {
             return this;
         }
 
-        private void validate(AspectV2 aspect){
-
+        private void validate(AspectV2 aspect) throws MissingAspectName {
+            if(aspect.getName() == null || aspect.getName().isEmpty()){
+                throw new MissingAspectName("Aspects must have a name!");
+            }
         }
 
         private String [] tagKeys(){
@@ -130,9 +146,7 @@ public class AspectV2 {
             return tags.toArray(result);
         }
 
-        public AspectV2 build(){
-            //Sort entries chronologically before creating the aspect.
-            entries.stream().sorted(Entry::compareTo);
+        public AspectV2 build() throws MissingAspectName {
             AspectV2 result = new AspectV2(this);
             validate(result);
             return result;

@@ -24,6 +24,13 @@ public class Tag {
         return value == null;
     }
 
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(key + ":");
+        sb.append(value != null?value:"null");
+        return sb.toString();
+    }
+
     public void print(){
         String result = key + " - " + (value!=null?value:"null ") + " [";
         for(String suggestion:suggestions){

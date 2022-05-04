@@ -2,15 +2,19 @@ package ca.mineself.model;
 
 import android.util.Log;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
+import ca.mineself.exceptions.InvalidEntry;
 import ca.mineself.exceptions.InvalidTagValue;
 import ca.mineself.exceptions.InvalidTimestamp;
 import ca.mineself.exceptions.MissingParentAspect;
+import ca.mineself.exceptions.ParentTagMismatch;
 import ca.mineself.exceptions.TagNotFound;
 
 public class Entry implements Comparable<Entry>{
@@ -19,6 +23,7 @@ public class Entry implements Comparable<Entry>{
     private int value;
     private String note;
     private Set<Tag> tags;
+
 
     public Tag getTag(String key) throws TagNotFound{
         Tag result = tags.stream()
@@ -138,16 +143,19 @@ public class Entry implements Comparable<Entry>{
             return this;
         }
 
-        private void validate(Entry entry) throws MissingParentAspect, InvalidTimestamp {
+        private void validate(Entry entry) throws MissingParentAspect, InvalidTimestamp, InvalidEntry, ParentTagMismatch {
             if(entry.parent == null){
                 throw new MissingParentAspect();
             }
             if(entry.timestamp.toEpochMilli() > Instant.now().toEpochMilli()){
                 throw new InvalidTimestamp("Entry timestamp cannot be in the future!");
             }
+            if(ParentTagMismatch.isMismatched(entry)){
+                throw new ParentTagMismatch(entry);
+            }
         }
 
-        public Entry build() throws InvalidTimestamp, MissingParentAspect {
+        public Entry build() throws InvalidTimestamp, MissingParentAspect, InvalidEntry, ParentTagMismatch {
             Entry entry = new Entry(this);
             validate(entry);
             return entry;
@@ -168,5 +176,39 @@ public class Entry implements Comparable<Entry>{
 
     public String getNote() {
         return note;
+    }
+
+    public Set<Tag> getTags(){
+        return tags;
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(Date.from(timestamp).toString());
+        sb.append(" - [" + parent.getName() + "] - ");
+        sb.append(value);
+        sb.append(" - [");
+
+        if(tags.size() > 0){
+            Iterator<Tag> it = tags.iterator();
+            while (it.hasNext()){
+                Tag t = it.next();
+                sb.append(t.toString());
+                if(it.hasNext()){
+                    sb.append(",");
+                }
+            }
+        }else{
+            sb.append("<NO TAGS>");
+        }
+        sb.append("] - ");
+
+        if(note.isEmpty() || note == null){
+            sb.append("<NO NOTE>");
+        }else {
+            sb.append(note);
+        }
+
+        return sb.toString();
     }
 }

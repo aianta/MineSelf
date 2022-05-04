@@ -9,11 +9,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import ca.mineself.exceptions.InsufficientHistory;
+import ca.mineself.exceptions.InvalidEntry;
 import ca.mineself.exceptions.InvalidTimestamp;
+import ca.mineself.exceptions.MissingAspectName;
 import ca.mineself.exceptions.MissingParentAspect;
+import ca.mineself.exceptions.ParentTagMismatch;
 import ca.mineself.exceptions.TagNotFound;
 import ca.mineself.model.AspectV2;
 import ca.mineself.model.Entry;
@@ -27,26 +32,35 @@ public class EntryTest {
     private static final String TEST_TAG = "Activity";
     private static final String TEST_TAG_VALUE = "unit testing";
 
+    private static AspectV2 aspectWithTag;
+    private static AspectV2 aspect;
 
-    @Test
-    public void createEntry() throws InvalidTimestamp, MissingParentAspect, InsufficientHistory, TagNotFound {
-
-        AspectV2 aspect = new AspectV2.Builder("Mood")
+    @BeforeAll
+    public static void setupAspect() throws MissingAspectName {
+        aspectWithTag = new AspectV2.Builder("Mood")
                 .addTag(TEST_TAG)
                 .build();
 
+        aspect = new AspectV2.Builder("Mood")
+                .build();
+    }
+
+
+    @Test
+    public void createEntry() throws InvalidTimestamp, MissingParentAspect, InsufficientHistory, TagNotFound, MissingAspectName, ParentTagMismatch, InvalidEntry {
+
         Entry entry = new Entry.Builder(TEST_VALUE)
                 .note(TEST_NOTE)
-                .parent(aspect)
+                .parent(aspectWithTag)
                 .build();
 
         assertEquals(100, entry.getValue());
-        assertEquals(aspect, entry.getParent());
+        assertEquals(aspectWithTag, entry.getParent());
         assertEquals(TEST_NOTE, entry.getNote());
         assertNotNull(entry.getTimestamp());
 
         Entry nextEntry = new Entry.Builder(TEST_VALUE)
-                .parent(aspect)
+                .parent(aspectWithTag)
                 .build();
 
         assertNotEquals(entry, nextEntry);
@@ -62,5 +76,6 @@ public class EntryTest {
 
         assertThrows(TagNotFound.class, ()->entry.getTag("woah"));
     }
+
 
 }
